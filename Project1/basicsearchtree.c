@@ -7,19 +7,19 @@ typedef struct tr_n_t {
     key_t key;
     struct tr_n_t *left;
     struct tr_n_t *right;
-    /* possibly additional information */ } tree_node_t;
+    /* possibly additional information */ } text_t;
 
 
 #define BLOCKSIZE 256
 
-tree_node_t *currentblock = NULL;
+text_t *currentblock = NULL;
 int size_left;
-tree_node_t *free_list = NULL;
+text_t *free_list = NULL;
 int nodes_taken = 0;
 int nodes_returned = 0;
 
-tree_node_t *get_node() {
-    tree_node_t *tmp;
+text_t *get_node() {
+    text_t *tmp;
     nodes_taken += 1;
     if (free_list != NULL) {
         tmp = free_list;
@@ -27,7 +27,7 @@ tree_node_t *get_node() {
     } else {
         if (currentblock == NULL || size_left == 0) {
             currentblock =
-                    (tree_node_t *) malloc(BLOCKSIZE * sizeof(tree_node_t));
+                    (text_t *) malloc(BLOCKSIZE * sizeof(text_t));
             size_left = BLOCKSIZE;
         }
         tmp = currentblock++;
@@ -36,21 +36,21 @@ tree_node_t *get_node() {
     return (tmp);
 }
 
-void return_node(tree_node_t *node) {
+void return_node(text_t *node) {
     node->right = free_list;
     free_list = node;
     nodes_returned += 1;
 }
 
-tree_node_t *create_tree(void) {
-    tree_node_t *tmp_node;
+text_t *create_tree(void) {
+    text_t *tmp_node;
     tmp_node = get_node();
     tmp_node->left = NULL;
     return (tmp_node);
 }
 
-object_t *find_iterative(tree_node_t *tree, key_t query_key) {
-    tree_node_t *tmp_node;
+object_t *find_iterative(text_t *tree, key_t query_key) {
+    text_t *tmp_node;
     if (tree->left == NULL)
         return (NULL);
     else {
@@ -68,7 +68,7 @@ object_t *find_iterative(tree_node_t *tree, key_t query_key) {
     }
 }
 
-object_t *find_recursive(tree_node_t *tree, key_t query_key) {
+object_t *find_recursive(text_t *tree, key_t query_key) {
     if (tree->left == NULL ||
         (tree->right == NULL && tree->key != query_key))
         return (NULL);
@@ -82,10 +82,10 @@ object_t *find_recursive(tree_node_t *tree, key_t query_key) {
     }
 }
 
-int insert(tree_node_t *tree, key_t new_key, object_t *new_object) {
-    tree_node_t *tmp_node;
+int insert(text_t *tree, key_t new_key, object_t *new_object) {
+    text_t *tmp_node;
     if (tree->left == NULL) {
-        tree->left = (tree_node_t *) new_object;
+        tree->left = (text_t *) new_object;
         tree->key = new_key;
         tree->right = NULL;
     } else {
@@ -101,13 +101,13 @@ int insert(tree_node_t *tree, key_t new_key, object_t *new_object) {
             return (-1);
         /* key is distinct, now perform the insert */
         {
-            tree_node_t *old_leaf, *new_leaf;
+            text_t *old_leaf, *new_leaf;
             old_leaf = get_node();
             old_leaf->left = tmp_node->left;
             old_leaf->key = tmp_node->key;
             old_leaf->right = NULL;
             new_leaf = get_node();
-            new_leaf->left = (tree_node_t *) new_object;
+            new_leaf->left = (text_t *) new_object;
             new_leaf->key = new_key;
             new_leaf->right = NULL;
             if (tmp_node->key < new_key) {
@@ -123,8 +123,8 @@ int insert(tree_node_t *tree, key_t new_key, object_t *new_object) {
     return (0);
 }
 
-object_t *_delete(tree_node_t *tree, key_t delete_key) {
-    tree_node_t *tmp_node, *upper_node, *other_node;
+object_t *_delete(text_t *tree, key_t delete_key) {
+    text_t *tmp_node, *upper_node, *other_node;
     object_t *deleted_object;
     if (tree->left == NULL)
         return (NULL);
@@ -161,8 +161,8 @@ object_t *_delete(tree_node_t *tree, key_t delete_key) {
     }
 }
 
-void remove_tree(tree_node_t *tree) {
-    tree_node_t *current_node, *tmp;
+void remove_tree(text_t *tree) {
+    text_t *current_node, *tmp;
     if (tree->left == NULL)
         return_node(tree);
     else {
@@ -184,11 +184,11 @@ void remove_tree(tree_node_t *tree) {
     }
 }
 
-tree_node_t *interval_find(tree_node_t *tree, key_t a, key_t b) {
-    tree_node_t *tr_node;
-    tree_node_t *node_stack[200];
+text_t *interval_find(text_t *tree, key_t a, key_t b) {
+    text_t *tr_node;
+    text_t *node_stack[200];
     int stack_p = 0;
-    tree_node_t *result_list, *tmp, *tmp2;
+    text_t *result_list, *tmp, *tmp2;
     result_list = NULL;
     node_stack[stack_p++] = tree;
     while (stack_p > 0) {
@@ -215,7 +215,7 @@ tree_node_t *interval_find(tree_node_t *tree, key_t a, key_t b) {
     return (result_list);
 }
 
-void check_tree(tree_node_t *tr, int depth, int lower, int upper) {
+void check_tree(text_t *tr, int depth, int lower, int upper) {
     if (tr->left == NULL) {
         printf("Tree Empty\n");
         return;
@@ -234,7 +234,7 @@ void check_tree(tree_node_t *tr, int depth, int lower, int upper) {
 }
 
 int main() {
-    tree_node_t *searchtree;
+    text_t *searchtree;
     char nextop;
     searchtree = create_tree();
     printf("Made Tree\n");
@@ -268,7 +268,7 @@ int main() {
         }
         if (nextop == 'v') {
             int a, b;
-            tree_node_t *results, *tmp;
+            text_t *results, *tmp;
             scanf(" %d %d", &a, &b);
             results = interval_find(searchtree, a, b);
             if (results == NULL)
@@ -308,5 +308,15 @@ int main() {
     printf("Total number of nodes taken %d, total number of nodes returned %d\n",
            nodes_taken, nodes_returned);
     return (0);
+}
+
+/*
+ * Creates an empty text, whose length is 0.
+ */
+text_t * create_text()
+{
+  text_t * dummy = create_tree();
+  dummy -> right = NULL;
+  return dummy;
 }
 
