@@ -7,6 +7,8 @@ typedef struct tr_n_t {
     key_t key;
     struct tr_n_t *left;
     struct tr_n_t *right;
+
+    char * line_content;
     /* possibly additional information */ } text_t;
 
 
@@ -320,3 +322,59 @@ text_t * create_text()
   return dummy;
 }
 
+/*
+ * returns the number of lines of the current text
+ */
+int length_text( text_t *txt)
+{
+
+}
+
+
+/*
+ *  gets the line of number index, if such a line exists, and returns NULL else
+ */
+char * get_line( text_t *txt, int index)
+{
+
+}
+
+/*
+ * appends new line as new last line
+ */
+void append_line( text_t *txt, char * new_line)
+{
+
+}
+
+/*
+ * ets the line of number index, if such a line exists, to new line,
+ * and returns a pointer to the previous line of that number.
+ * If no line of that number exists, it does not change the structure and returns NULL
+ */
+char * set_line( text_t *txt, int index, char * new_line)
+{
+
+}
+
+/*
+ * inserts the line before the line of
+ * number index, if such a line exists, to new line,
+ *
+ * renumbering all lines after that line. If no such
+ * line exists, it appends new line as new last line
+ */
+void insert_line( text_t *txt, int index, char * new_line)
+{
+
+}
+
+
+/*
+ * deletes the line of number index, renumbering all lines after that line,
+ * and returns a pointer to the deleted line
+ */
+char * delete_line( text_t *txt, int index)
+{
+
+}
